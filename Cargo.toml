@@ -1,0 +1,9 @@
+[package]
+name = "eversender-docs"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.98"
+solana-client = "2.3.6"
+solana-sdk = "2.3.1"
