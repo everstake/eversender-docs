@@ -1,3 +1,4 @@
+# RPC
 **EverSender Tip Payment Accounts:**
 - `J4cL8c22KNLHwheuWxK1SCYBWASWPGhEi6xvcGyf6o3S`
 - `EzuhsszPxRUHBwGPXtKoqCB58EiTJ1QiYA2XrhbUEFbr`
@@ -15,3 +16,8 @@
 
 **Min Lamports**
 - `500000`
+
+# QUIC
+**EverSender Quic Endpoint**
+- `139.177.179.168:11809`
+

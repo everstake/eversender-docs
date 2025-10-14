@@ -1060,8 +1060,13 @@ name = "eversender-docs"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "bincode",
+ "quinn",
+ "rustls 0.23.32",
  "solana-client",
  "solana-sdk",
+ "solana-tls-utils",
+ "tokio",
 ]
 
 [[package]]
