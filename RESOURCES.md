@@ -19,5 +19,5 @@
 
 # QUIC
 **EverSender Quic Endpoint**
-- `139.177.179.168:11809`
+- Frankfurt: `139.177.179.168:11809`
 
