@@ -19,5 +19,8 @@
 
 # QUIC
 **EverSender Quic Endpoint**
-- Frankfurt: `139.177.179.168:11809`
+- Frankfurt: `64.130.57.62:11809`
+- Tokio: `208.91.107.171:11809`
+- Amsterdam: `74.118.140.197:11809`
+- NewYork: `64.130.59.154:11809`
 
