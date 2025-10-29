@@ -85,7 +85,7 @@ async fn main() -> Result<()> {
     let transaction = create_transaction(&solana_client, &ever_sender_authorized_keypair)?;
 
     // Use the address from RESOURCES.MD
-    let ever_sender_quic_addr: &str = "139.177.179.168:11809";
+    let ever_sender_quic_addr: &str = "64.130.57.62:11809";
 
     println!("Connecting to QUIC server...");
     let client = QuicClient::connect(
