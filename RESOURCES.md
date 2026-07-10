@@ -31,10 +31,18 @@
 	- `https://ams-swqos.everstake.one`
   - `http://ams-swqos.everstake.one`
   
+- **SGP.**
+  - `https://sgp-swqos.everstake.one`
+  - `http://sgp-swqos.everstake.one`
+  
+- **LON.**
+  - `https://lon-swqos.everstake.one`
+  - `http://lon-swqos.everstake.one`
+  
 **Important**: Always use the correct protocol (http/https) for the appropriate port. For example, port 443 only works with HTTPS.
 
 **Min Lamports**
-- `500000`
+- `1000000`
 
 **Special RPC Node Flag**
 To send all transactions to a single leader (instead of following the leader schedule), the RPC node must include:
