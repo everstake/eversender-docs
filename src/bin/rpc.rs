@@ -1,4 +1,4 @@
-//This is the minimum working way to send a transaction to Everstake SWQoS service. 
+//This is the minimum working way to send a transaction to Everstake Landing service.
 //If you want to improve transaction inclusion - increase priority-fee, introduce your own retry logic
 use {
     solana_client::rpc_client::RpcClient,
@@ -30,7 +30,7 @@ fn main() {
     // For https:// endpoints, HTTP/2 is negotiated automatically via ALPN.
     //
     // HTTPS example (HTTP/2 negotiated automatically):
-    // let everstake_swqos_client = RpcClient::new("https://fra-swqos.everstake.one");
+    // let everstake_landing_client = RpcClient::new("https://fra-swqos.everstake.one");
     //
     // HTTP/2 cleartext (h2c) - lowest latency, no encryption overhead:
     let raw_client = reqwest::Client::builder()
@@ -41,11 +41,11 @@ fn main() {
         .build()
         .expect("Failed to build raw rpc client");
 
-    // TODO: use one of RESOURCES.md Everstake SWQoS RPC Endpoints
+    // TODO: use one of RESOURCES.md Everstake Landing RPC Endpoints
     let http_sender = solana_rpc_client::http_sender::HttpSender::new_with_client("http://fra-swqos.everstake.one", raw_client);
     let rpc_client_config = solana_rpc_client::rpc_client::RpcClientConfig::with_commitment(solana_client::rpc_config::CommitmentConfig::confirmed());
 
-    let everstake_swqos_client = RpcClient::new_sender(http_sender, rpc_client_config);
+    let everstake_landing_client = RpcClient::new_sender(http_sender, rpc_client_config);
 
     // TODO: use your keypair file path
     let sender = read_keypair_file("~/.config/solana/id.json").unwrap(); 
@@ -56,8 +56,8 @@ fn main() {
     // For demonstration we set receiver equal to sender (self-transfer)
     let receiver = sender.pubkey(); 
 
-    // This instruction is mandatory. Without it, Everstake SWQoS will skip your transaction.
-    // First: transfer tip to `tip_pubkey`. This is necessary for your transaction to be processed by Everstake SWQoS.
+    // This instruction is mandatory. Without it, Everstake Landing will skip your transaction.
+    // First: transfer tip to `tip_pubkey`. This is necessary for your transaction to be processed by Everstake Landing.
     let tip_instruction = instruction::transfer(&sender.pubkey(), &tip_pubkey, 500_000); 
     // Second: a self-transfer from sender to receiver (same pubkey) to demonstrate multiple instructions
     let self_transfer = instruction::transfer(&sender.pubkey(), &receiver, 1_000);
@@ -85,7 +85,7 @@ fn main() {
         return;
     }
 
-    match everstake_swqos_client.send_transaction(&transaction) {
+    match everstake_landing_client.send_transaction(&transaction) {
         Ok(signature) => println!("Transaction with signature: {} was sent successfully", signature),
         Err(err) => eprintln!("Error while sending transaction: {}", err),
     }
