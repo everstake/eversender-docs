@@ -31,9 +31,9 @@ Your App ──(signed tx)──▶ Everstake Landing RPC ──▶ Current & up
 2. **Submit** it to an Everstake Landing endpoint via the standard `sendTransaction` JSON-RPC method.
 3. **Done.** Everstake forwards it to network leaders on your behalf.
 
-The tip (minimum 500,000 lamports = 0.0005 SOL) is **mandatory** — it activates priority forwarding. Without it, your transaction will be dropped.
+The tip (minimum 1,000,000 lamports = 0.001 SOL) is **mandatory** — it activates priority forwarding. Without it, your transaction will be dropped.
 
-> **No preflight simulation:** Everstake SWQoS does not run preflight checks. Transactions are forwarded as-is. Make sure your transaction is valid before sending.
+> **No preflight simulation:** Everstake Landing does not run preflight checks. Transactions are forwarded as-is. Make sure your transaction is valid before sending.
 
 ---
 
@@ -241,7 +241,7 @@ Transaction with signature: <your signature> was sent successfully
 
 | Parameter | Value |
 |-----------|-------|
-| Min tip | 500,000 lamports (0.0005 SOL) |
+| Min tip | 1,000,000 lamports (0.001 SOL) |
 | Tip instruction position | First in the instruction list |
 | Tip address in ALT | Not allowed |
 | Default rate limit | 10 transactions per second (TPS) per client |
