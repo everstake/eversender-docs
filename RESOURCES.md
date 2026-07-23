@@ -50,8 +50,4 @@ To send all transactions to a single leader (instead of following the leader sch
 where `<SocketAddr>` is one of the Everstake SWQoS QUIC endpoints listed below.
 
 # QUIC
-**Everstake SWQoS Quic Endpoints**
-- Frankfurt: `64.130.57.62:11809`
-- Tokio: `208.91.107.171:11809`
-- Amsterdam: `74.118.140.197:11809`
-- NewYork: `64.130.59.154:11809`
+To access **QUIC endpoints**, please refer to [this guide](https://docs.blockspace.everstake.one/swqos/quickstart#path-2--quic-lowest-latency-custom-client).
