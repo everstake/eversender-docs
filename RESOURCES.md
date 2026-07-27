@@ -1,5 +1,5 @@
 # RPC
-**Everstake SWQoS Tip Payment Accounts:**
+**Everstake Landing Tip Payment Accounts:**
 - `J4cL8c22KNLHwheuWxK1SCYBWASWPGhEi6xvcGyf6o3S`
 - `EzuhsszPxRUHBwGPXtKoqCB58EiTJ1QiYA2XrhbUEFbr`
 - `7wsUm2VDopGDFyXkyhmgUh9V15QkEvnyqbgUPcagLcw2`
@@ -11,7 +11,7 @@
 - `DMHQ51qK2wChtDEUED54cqzbSLMLGvTygQCv5uLTUmZP`
 - `GDnz7cAA7hKEFmDyrk6mz3drybHWc3Gn14y9LCsvvtjE`
 
-**Everstake SWQoS RPC Endpoints**
+**Everstake Landing RPC Endpoints**
 - **Main Cloudflare**
   - `https://main-swqos.everstake.one`
   - `http://main-swqos.everstake.one`
@@ -47,7 +47,7 @@
 **Special RPC Node Flag**
 To send all transactions to a single leader (instead of following the leader schedule), the RPC node must include:
 `--rpc-send-transaction-tpu-peer <SocketAddr>`
-where `<SocketAddr>` is one of the Everstake SWQoS QUIC endpoints listed below.
+where `<SocketAddr>` is one of the Everstake Landing QUIC endpoints listed below.
 
 # QUIC
 To access **QUIC endpoints**, please refer to [this guide](https://docs.blockspace.everstake.one/swqos/quickstart#path-2--quic-lowest-latency-custom-client).

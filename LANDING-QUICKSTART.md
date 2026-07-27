@@ -1,10 +1,10 @@
-# Everstake SWQoS Quickstart
+# Everstake Landing Quickstart
 
-> This guide walks you through sending a Solana transaction via Everstake SWQoS RPC from scratch.
+> This guide walks you through sending a Solana transaction via Everstake Landing RPC from scratch.
 
-## What is Everstake SWQoS?
+## What is Everstake Landing?
 
-Everstake SWQoS is a high-performance transaction relay for the Solana network. Instead of submitting your transactions to a generic public RPC endpoint, you route them through Everstake's infrastructure, which forwards them directly to current and upcoming block leaders with minimal latency — improving both speed and inclusion rate.
+Everstake Landing is a high-performance transaction relay for the Solana network. Instead of submitting your transactions to a generic public RPC endpoint, you route them through Everstake's infrastructure, which forwards them directly to current and upcoming block leaders with minimal latency — improving both speed and inclusion rate.
 
 **Why use it?**
 - Higher transaction inclusion rate
@@ -24,16 +24,16 @@ Everstake SWQoS is a high-performance transaction relay for the Solana network. 
 ## How it works
 
 ```
-Your App ──(signed tx)──▶ Everstake SWQoS RPC ──▶ Current & upcoming block leaders
+Your App ──(signed tx)──▶ Everstake Landing RPC ──▶ Current & upcoming block leaders
 ```
 
 1. **Build** a standard Solana transaction that includes a small tip to Everstake.
-2. **Submit** it to an Everstake SWQoS endpoint via the standard `sendTransaction` JSON-RPC method.
+2. **Submit** it to an Everstake Landing endpoint via the standard `sendTransaction` JSON-RPC method.
 3. **Done.** Everstake forwards it to network leaders on your behalf.
 
-The tip (minimum 500,000 lamports = 0.0005 SOL) is **mandatory** — it activates priority forwarding. Without it, your transaction will be dropped.
+The tip (minimum 1,000,000 lamports = 0.001 SOL) is **mandatory** — it activates priority forwarding. Without it, your transaction will be dropped.
 
-> **No preflight simulation:** Everstake SWQoS does not run preflight checks. Transactions are forwarded as-is. Make sure your transaction is valid before sending.
+> **No preflight simulation:** Everstake Landing does not run preflight checks. Transactions are forwarded as-is. Make sure your transaction is valid before sending.
 
 ---
 
@@ -54,14 +54,14 @@ bincode               = "1.3"
 
 ---
 
-## Step 2 — Set up the SWQoS RPC client
+## Step 2 — Set up the Landing RPC client
 
 You need **two clients**:
 
 | Client | Purpose |
 |--------|---------|
 | Standard Solana RPC | Read chain state (latest blockhash, account info, etc.) |
-| Everstake SWQoS client | Submit transactions |
+| Everstake Landing client | Submit transactions |
 
 The Everstake client is a standard `RpcClient` backed by an HTTP/2-enabled `reqwest` client for maximum performance. HTTP/2 multiplexes multiple requests over a single persistent TCP connection, eliminating per-request handshake overhead.
 
@@ -88,7 +88,7 @@ let rpc_client_config = solana_rpc_client::rpc_client::RpcClientConfig::with_com
     solana_client::rpc_config::CommitmentConfig::confirmed(),
 );
 
-let everstake_swqos_client = RpcClient::new_sender(http_sender, rpc_client_config);
+let everstake_landing_client = RpcClient::new_sender(http_sender, rpc_client_config);
 ```
 
 **Choosing an endpoint:** Use the **Main Cloudflare** endpoint (`http://main-swqos.everstake.one` / `https://main-swqos.everstake.one`)
@@ -108,15 +108,15 @@ let sender = read_keypair_file("~/.config/solana/id.json").unwrap();
 
 This keypair is both the **transaction signer** and the **fee payer**. It will pay:
 - The standard Solana network fee
-- The tip to Everstake SWQoS (≥ 500,000 lamports)
+- The tip to Everstake Landing (≥ 1,000,000 lamports)
 - Any SOL moved by your own instructions
 
 ---
 
 ## Step 4 — Build the transaction
 
-A valid SWQoS transaction must contain **at minimum**:
-1. A **tip instruction** — `SystemProgram::transfer` to an Everstake tip address (≥ 500,000 lamports)
+A valid Landing transaction must contain **at minimum**:
+1. A **tip instruction** — `SystemProgram::transfer` to an Everstake tip address (≥ 1,000,000 lamports)
 2. **Your instructions** — whatever your application needs to do
 
 3. A **memo instruction** — attach an invoice ID, order reference, or any string identifier
@@ -146,8 +146,8 @@ const TIP_ACCOUNTS: &[&str] = &[
 let tip_str = TIP_ACCOUNTS.choose(&mut rand::thread_rng()).unwrap();
 let tip_pubkey: Pubkey = tip_str.parse().unwrap();
 
-// Minimum: 500_000 lamports (0.0005 SOL)
-let tip_instruction = instruction::transfer(&sender.pubkey(), &tip_pubkey, 500_000);
+// Minimum: 1_000_000 lamports (0.001 SOL)
+let tip_instruction = instruction::transfer(&sender.pubkey(), &tip_pubkey, 1_000_000);
 ```
 
 > Do **not** add the tip address to an Address Lookup Table — pass it as a regular account.
@@ -183,7 +183,7 @@ let memo_instruction = Instruction {
 [View in example → `src/bin/rpc.rs` lines 73–75](https://github.com/everstake/everstake-swqos-docs/blob/main/src/bin/rpc.rs#L73-L75)
 
 ```rust
-// Always fetch the blockhash from the standard RPC, not the SWQoS endpoint
+// Always fetch the blockhash from the standard RPC, not the Landing endpoint
 let recent_blockhash = solana_client.get_latest_blockhash().unwrap();
 
 let message = Message::new(
@@ -193,13 +193,13 @@ let message = Message::new(
 let transaction = Transaction::new(&[&sender], message, recent_blockhash);
 ```
 
-> **Why use the standard RPC for the blockhash?** The blockhash defines the validity window of your transaction (~150 blocks, roughly 60–90 seconds). The SWQoS endpoint is optimized for sending — use a reliable public RPC for reading chain state.
+> **Why use the standard RPC for the blockhash?** The blockhash defines the validity window of your transaction (~150 blocks, roughly 60–90 seconds). The Landing endpoint is optimized for sending — use a reliable public RPC for reading chain state.
 
 ---
 
 ## Step 5 — Send the transaction
 
-Before sending, validate the serialized size to ensure it fits within Solana's maximum packet size (1232 bytes). Then submit via the SWQoS client.
+Before sending, validate the serialized size to ensure it fits within Solana's maximum packet size (1232 bytes). Then submit via the Landing client.
 
 [View in example → `src/bin/rpc.rs` lines 77–91](https://github.com/everstake/everstake-swqos-docs/blob/main/src/bin/rpc.rs#L77-L91)
 
@@ -214,7 +214,7 @@ if serialized_tx.len() > PACKET_DATA_SIZE {
     return;
 }
 
-match everstake_swqos_client.send_transaction(&transaction) {
+match everstake_landing_client.send_transaction(&transaction) {
     Ok(signature) => println!("Transaction sent! Signature: {}", signature),
     Err(err)      => eprintln!("Error: {}", err),
 }
@@ -241,7 +241,7 @@ Transaction with signature: <your signature> was sent successfully
 
 | Parameter | Value |
 |-----------|-------|
-| Min tip | 500,000 lamports (0.0005 SOL) |
+| Min tip | 1,000,000 lamports (0.001 SOL) |
 | Tip instruction position | First in the instruction list |
 | Tip address in ALT | Not allowed |
 | Default rate limit | 10 transactions per second (TPS) per client |

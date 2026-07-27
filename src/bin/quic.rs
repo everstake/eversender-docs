@@ -1,4 +1,4 @@
-//This is the minimum working way to send a transaction to Everstake SWQoS Quic service. 
+//This is the minimum working way to send a transaction to Everstake Landing Quic service.
 //If you want to improve transaction inclusion - increase priority-fee, introduce your own retry logic
 use std::sync::Arc;
 use anyhow::{anyhow, Context, Result};
@@ -14,14 +14,14 @@ use solana_system_interface::instruction;
 use solana_tls_utils::{new_dummy_x509_certificate, SkipServerVerification};
 use solana_perf::packet::PACKET_DATA_SIZE;
 
-const ALPN_SWQOS_TX_PROTOCOL: &[&[u8]] = &[b"solana-tpu"];
+const ALPN_LANDING_TX_PROTOCOL: &[&[u8]] = &[b"solana-tpu"];
 
 pub struct QuicClient {
     _endpoint: Endpoint,
     connection: Connection,
 }
 
-//Establish a connection to Everstake SWQoS Quic Endpoint
+//Establish a connection to Everstake Landing Quic Endpoint
 impl QuicClient {
     pub async fn connect(addr: &str, keypair: &Keypair) -> Result<Self> {
         let (cert, key) = new_dummy_x509_certificate(keypair);
@@ -32,7 +32,7 @@ impl QuicClient {
             .with_client_auth_cert(vec![cert], key)
             .context("failed to configure client certificate")?;
 
-        crypto.alpn_protocols = ALPN_SWQOS_TX_PROTOCOL.iter().map(|p| p.to_vec()).collect();
+        crypto.alpn_protocols = ALPN_LANDING_TX_PROTOCOL.iter().map(|p| p.to_vec()).collect();
 
         let client_crypto = QuicClientConfig::try_from(crypto)
             .context("failed to convert rustls config into quinn crypto config")?;
@@ -89,19 +89,19 @@ fn create_transaction(rpc_client: &RpcClient, signer: &Keypair) -> Result<Transa
 #[tokio::main]
 async fn main() -> Result<()> {
     // To establish a connection, use the keypair whose pubkey you previously authorized in our service.
-    let everstake_swqos_authorized_keypair = read_keypair_file("~/.config/solana/id.json")
+    let everstake_landing_authorized_keypair = read_keypair_file("~/.config/solana/id.json")
         .map_err(|err| anyhow!("failed to read authorized keypair: {err}"))?;
-    
+
     let solana_client = RpcClient::new("https://api.mainnet-beta.solana.com");
-    let transaction = create_transaction(&solana_client, &everstake_swqos_authorized_keypair)?;
+    let transaction = create_transaction(&solana_client, &everstake_landing_authorized_keypair)?;
 
     // Use the address from RESOURCES.MD
-    let everstake_swqos_quic_addr: &str = "64.130.57.62:11809";
+    let everstake_landing_quic_addr: &str = "64.130.57.62:11809";
 
     println!("Connecting to QUIC server...");
     let client = QuicClient::connect(
-        everstake_swqos_quic_addr,
-        &everstake_swqos_authorized_keypair,
+        everstake_landing_quic_addr,
+        &everstake_landing_authorized_keypair,
     ).await?;
 
     client.send_transaction(&transaction).await?;
